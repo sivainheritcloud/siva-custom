@@ -33,7 +33,7 @@
 					<armDeployment>
 						<muleVersion>4.5.2</muleVersion>
 						<uri>https://anypoint.mulesoft.com</uri>
-                                                <target>sapi</target>
+                                                <target>demo-deploy</target>
                                                 <applicationName>custom-sfdc-sapi</applicationName>
 						<targetType>server</targetType>
                                                  <username>janasena1</username>
