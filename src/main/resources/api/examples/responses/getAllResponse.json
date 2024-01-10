@@ -1,0 +1,21 @@
+[{
+  "name": "Sivakumar",
+  "dateOfBirth__c": "2023-01-04",
+  "gender__c": "male",
+  "email__c": "Sivakumar@gmail.com",
+  "phone__c": "9177193654",
+  "address__c": "1-48, parvathi enclave,chodavaram, vizag",
+  "ownerId": "0055j000008YrBjAAK",
+  "id": "a005j00000V1ByjAAF"  
+},
+{
+  "name": "Sivakumar",
+  "dateOfBirth__c": "2023-01-04",
+  "gender__c": "male",
+  "email__c": "Sivakumar@gmail.com",
+  "phone__c": "9177193654",
+  "address__c": "1-48, parvathi enclave,chodavaram, vizag",
+  "ownerId": "0055j000008YrBjAAK",
+  "id": "a005j00000V1ByjAAF"  
+}
+]

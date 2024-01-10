@@ -1,0 +1,12 @@
+%dw 2.0
+
+type auto_3619faf4_d6f2_4d1b_bc6e_88654267741e_Output_Payload = {
+  address__c: String, 
+  phone__c: String, 
+  gender__c: String, 
+  name?: String, 
+  email__c: String, 
+  dateOfBirth__c: String, 
+  _?: Any
+} {"description": "Retrieving single object details"}
+

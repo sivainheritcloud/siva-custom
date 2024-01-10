@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	
+	<sub-flow name="creating_new_customobject_implementation" doc:id="7f45085f-1c66-4398-abbd-ab94ffe635b9" >
+		<logger level="INFO" doc:name="Logger" doc:id="e3b894f6-efb0-4720-9560-ae10457527d7" />
+		<ee:transform doc:name="Transform Message" doc:id="9b00603a-5177-49a5-b3e7-93ec8c13ce22" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	Name:payload.name,
+	DateOfBirth__c:payload.dateOfBirth__c as Date{format: "yyyy-MM-dd"},
+	Gender__c:payload.gender__c,
+	Email__c:payload.email__c,
+	Phone__c:payload.phone__c,
+	Address__c:payload.address__c
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:create type="Student__c" doc:name="Create" doc:id="05fb293e-7b97-490b-9dd8-7cfa060cecef" config-ref="Salesforce_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="98ec37cb-e969-408b-84f1-bcd1f73911af" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+        "is_success": payload.items.successful,
+    "response": payload.items map(item,index) ->{
+        "payload": item.payload
+    }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="get_all_customobject_implementation" doc:id="21ae535c-6af2-4e44-b5d2-4ecde8e53e88" >
+		<logger level="INFO" doc:name="Logger" doc:id="8e93e26b-ff6a-4254-b975-2ebaab9c0700" />
+		<salesforce:query-all doc:name="Query all" doc:id="785149d2-0f63-4196-a0fd-3121b0b0ee8d" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT Address__c,CreatedById,CreatedDate,DateOfBirth__c,Email__c,Gender__c,Id,IsDeleted,LastModifiedById,LastModifiedDate,Name,OwnerId,Phone__c FROM Student__c]]></salesforce:salesforce-query>
+		</salesforce:query-all>
+		<ee:transform doc:name="Transform Message" doc:id="18fdf1e7-c6d1-4ad6-bfcd-a55b4de714f6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map((item,index)->{name: item.Name default "",
+	dateOfBirth__c: item.DateOfBirth__c as String default "",
+	gender__c: item.Gender__c default "",
+	email__c: item.Email__c default "",
+	phone__c: item.Phone__c as Number as String default "",
+	address__c: item.Address__c default "",
+	ownerId: item.OwnerId default "",
+	id: item.Id default ""})
+	
+	
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="get_by_id_implementation" doc:id="3619faf4-d6f2-4d1b-bc6e-88654267741e" >
+		<logger level="INFO" doc:name="Logger" doc:id="9ae70e64-9c62-4050-b498-c0745aa8d30a" />
+		<salesforce:query doc:name="Query" doc:id="253feb55-4090-4fd6-a6a9-1d9bbf21bf7e" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT Address__c,CreatedById,CreatedDate,DateOfBirth__c,Email__c,Gender__c,Id,IsDeleted,LastModifiedById,LastModifiedDate,Name,OwnerId,Phone__c FROM Student__c where Id = ':id']]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[{
+	"id": attributes.uriParams.id
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Transform Message" doc:id="3887e4a6-dddf-410f-a817-9dd3648e7918" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map((item,index)->{name: item.Name default "",
+	dateOfBirth__c: item.DateOfBirth__c as String default "",
+	gender__c: item.Gender__c default "",
+	email__c: item.Email__c default "",
+	phone__c: item.Phone__c as Number as String default "",
+	address__c: item.Address__c default "",
+	ownerId: item.OwnerId default "",
+	id: item.Id default ""})
+	
+	
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="delete_by_id_implementation" doc:id="b6e28680-efc3-4df5-8a25-9d1276a96491" >
+		<logger level="INFO" doc:name="Logger" doc:id="083a1e92-810a-445c-83b7-9a4d29354ebb" />
+		<salesforce:query doc:name="Query" doc:id="02477491-60aa-43bd-b006-5b45b80a0073" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT Id FROM Student__c where Id = ':id']]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[{
+	"id":attributes.uriParams.id
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Transform Message" doc:id="23c5b404-9294-4ea2-8818-c8c4278fc528" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:delete doc:name="Delete" doc:id="2e260bd4-15d7-4bea-989c-ed17f4410937" config-ref="Salesforce_Config">
+			<salesforce:ids><![CDATA[#[payload.Id]]]></salesforce:ids>
+		</salesforce:delete>
+		<ee:transform doc:name="Transform Message" doc:id="e1e99e13-1805-4b4f-a8dd-da178630626a">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+        "is_success": payload.items.successful,
+    "response": payload.items map(item,index) ->{
+        "payload": item.payload
+    }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="update_by_id_implementation" doc:id="b558f066-5793-4e36-9432-dc420b3c9a56" >
+		<logger level="INFO" doc:name="Logger" doc:id="5e762396-f36a-4b53-8c72-7bfc0b531ca0" />
+		<ee:transform doc:name="Transform Message" doc:id="f6fa5f80-c385-40ad-b744-bd0dfb866d12" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	"Id":attributes.uriParams.id,
+	"Name":payload.name,
+	"DateOfBirth__c":payload.dateOfBirth__c as Date{format: "yyyy-MM-dd"},
+	"Gender__c":payload.gender__c,
+	"Email__c":payload.email__c,
+	"Phone__c":payload.phone__c,
+	"Address__c":payload.address__c
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:update doc:name="Update" doc:id="b7c24929-4742-4f04-a8ed-614f98516a01" config-ref="Salesforce_Config" type="Student__c"/>
+		<ee:transform doc:name="Transform Message" doc:id="918cdd5d-f882-483b-8b37-3c64090befdf" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+        "is_success": payload.items.successful,
+    "response": payload.items map(item,index) ->{
+        "payload": item.payload
+    }
+    
+    }]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>

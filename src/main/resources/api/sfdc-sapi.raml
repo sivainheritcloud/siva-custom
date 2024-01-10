@@ -1,0 +1,82 @@
+#%RAML 1.0
+title: sfdc-sapi
+version: 1.0.0
+description: Integration with sfdc
+
+protocols:
+  - HTTP
+  - HTTPS
+
+traits:
+  headers: !include  /traits/Trait.raml
+  trackingParams:
+    headers:
+      X-Correlation-ID:
+        description: A unique identifier for this message, to enable tracking,reporting, and correlation.
+        type: string
+        required: true
+        minLength: 4 
+
+resourceTypes:
+  Collection: !include /resourceTypes/Collection.raml
+
+uses:
+  errorDataType: /resources/libraries/errorDataType.raml
+  deleteDataType: /resources/libraries/deleteDataTypes.raml
+  getAllDataType: /resources/libraries/getAllDataType.raml
+  getSingleDataType: /resources/libraries/getSingleDataType.raml
+  postDataType: /resources/libraries/postDataType.raml
+  putDataType: /resources/libraries/putDataType.raml
+
+/Student:
+  is:
+    - headers
+    - trackingParams
+  description: used to add new object
+  type:
+    Collection:
+      post-request-schema:
+        postDataType.post_request
+      post-request-example: 
+        !include  /examples/requests/postRequest.json
+      post-response-schema: 
+        postDataType.post_response
+      post-response-example: 
+        !include /examples/responses/postResponse.json
+      get-response-schema: 
+        getAllDataType.get_all_response
+      get-response-example: 
+        !include /examples/responses/getAllResponse.json
+
+      errors-schema: errorDataType.error
+
+  get:
+  post:
+  /{id}:
+    is:
+      - headers
+      - trackingParams
+    description: used to retrieve single record
+    type:
+      Collection:
+        put-request-schema:
+          putDataType.put_request
+        put-request-example: 
+          !include /examples/requests/putRequest.json
+        put-response-schema: 
+          putDataType.put_response
+        put-response-example:
+          !include /examples/responses/putResponse.json
+        get-response-schema:
+          getSingleDataType.get_single_response
+        get-response-example: 
+          !include /examples/responses/getSingleResponse.json
+        delete-response-schema:
+          deleteDataType.delete_response
+        delete-response-example: 
+          !include /examples/responses/deleteResponse.json  
+        errors-schema: errorDataType.error
+
+    put:
+    get:
+    delete:
