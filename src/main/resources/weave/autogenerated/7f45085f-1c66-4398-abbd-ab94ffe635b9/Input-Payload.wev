@@ -1,0 +1,12 @@
+%dw 2.0
+
+type auto_7f45085f_1c66_4398_abbd_ab94ffe635b9_Input_Payload = {
+  address__c: String, 
+  phone__c: String, 
+  gender__c: String, 
+  name?: String, 
+  email__c: String, 
+  dateOfBirth__c: String, 
+  _?: Any
+} {"description": "creating new object"}
+

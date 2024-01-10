@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_21ae535c_6af2_4e44_b5d2_4ecde8e53e88_Output_Payload = Array<{  address__c: String,   phone__c: String,   gender__c: String,   name?: String,   email__c: String,   dateOfBirth__c: String,   _?: Any}> {"description": "retreiving all objects"}
+
